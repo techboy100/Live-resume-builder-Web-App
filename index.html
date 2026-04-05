@@ -6,156 +6,137 @@
     <title>ResumePro by Ritik - Build Your Resume</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@700&amp;display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap');
+      
         :root {
             --accent: #2563eb;
         }
-        
+      
         * {
             transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
             transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
             transition-duration: 150ms;
         }
-        
+      
         .tail-container * {
             font-family: 'Inter', system_ui, sans-serif;
         }
-        
+      
         .resume-preview {
             font-family: 'Inter', system_ui, sans-serif;
+            background-color: white;
             box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.15);
         }
-        
+      
         .classic .resume-header {
             border-bottom: 4px solid #2563eb;
         }
-        
+      
         .modern .resume-header {
             background: linear-gradient(90deg, #2563eb, #3b82f6);
             color: white;
         }
-        
+      
+        /* PURE A4 ONLY - No extra page behind */
+        #resume-preview {
+            width: 210mm;
+            height: 297mm;
+            background-color: white;
+            margin: 0 auto;
+            overflow: hidden;
+            box-shadow: none; /* removed shadow so no "page behind" effect */
+        }
+      
         @media print {
             .no-print {
                 display: none !important;
             }
-            
             body {
                 margin: 0;
                 padding: 0;
             }
-            
-            .resume-preview {
+            #resume-preview {
                 box-shadow: none !important;
-                margin: 0 auto !important;
                 width: 210mm !important;
-                min-height: 297mm !important;
-                max-width: none !important;
+                height: 297mm !important;
+                margin: 0 auto !important;
                 border-radius: 0 !important;
-                padding: 20mm 15mm !important;
+                overflow: hidden !important;
             }
-            
-            .preview-panel {
-                width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
+            #resume-preview > div {
+                padding: 12mm 9mm !important;
             }
-            
-            .resume-preview h1 {
-                font-size: 28pt !important;
-            }
-            
-            .resume-preview h2 {
-                font-size: 14pt !important;
+            @page {
+                size: A4 portrait;
+                margin: 0mm !important;
             }
         }
-        
+      
+        #preview-wrapper {
+            max-width: 100%;
+            margin: 0 auto;
+            background: transparent; /* no extra white card */
+        }
+      
         .form-input {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+      
         .form-input:focus {
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
             transform: translateY(-1px);
         }
-        
-        .resume-section {
-            animation: fadeIn 0.4s ease forwards;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
+      
         .photo-upload {
             transition: all 0.3s ease;
         }
-        
+      
         .photo-upload:hover {
             transform: scale(1.05);
             box-shadow: 0 10px 15px -3px rgb(37 99 235);
         }
     </style>
 </head>
-<body class="tail-container">
+<body class="tail-container bg-gray-50">
     <!-- HEADER -->
     <header class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50 no-print">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-x-3">
-                <div class="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner">📄</div>
+                <div class="w-9 h-9 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner">📄</div>
                 <div>
-                    <h1 class="text-3xl font-semibold tracking-tight text-gray-900">ResumePro Made by Ritik</h1>
-                    <p class="text-xs text-blue-600 font-medium -mt-1">Professional resumes in seconds</p>
+                    <h1 class="text-2xl font-semibold tracking-tight text-gray-900">ResumePro by Ritik</h1>
                 </div>
             </div>
-            
-            <div class="flex items-center gap-x-4">
-                <!-- Template Switcher in header for quick access -->
+          
+            <div class="flex items-center gap-x-3">
                 <div class="flex items-center bg-gray-100 rounded-3xl p-1 text-sm font-medium">
-                    <button onclick="switchTemplate(0)" 
-                            id="template-btn-0"
-                            class="template-btn px-6 py-2 rounded-3xl flex items-center gap-x-2 hover:bg-white hover:shadow-sm data-[active=true]:bg-white data-[active=true]:shadow-sm">
-                        <span class="text-blue-600">📋</span>
-                        <span>Classic</span>
+                    <button onclick="switchTemplate(0)" id="template-btn-0"
+                            class="template-btn px-5 py-2 rounded-3xl flex items-center gap-x-2 hover:bg-white hover:shadow-sm data-[active=true]:bg-white data-[active=true]:shadow-sm">
+                        <span class="text-blue-600">📋</span> Classic
                     </button>
-                    <button onclick="switchTemplate(1)" 
-                            id="template-btn-1"
-                            class="template-btn px-6 py-2 rounded-3xl flex items-center gap-x-2 hover:bg-white hover:shadow-sm data-[active=true]:bg-white data-[active=true]:shadow-sm">
-                        <span class="text-emerald-600">✦</span>
-                        <span>Modern</span>
+                    <button onclick="switchTemplate(1)" id="template-btn-1"
+                            class="template-btn px-5 py-2 rounded-3xl flex items-center gap-x-2 hover:bg-white hover:shadow-sm data-[active=true]:bg-white data-[active=true]:shadow-sm">
+                        <span class="text-emerald-600">✦</span> Modern
                     </button>
                 </div>
-                
+              
                 <div class="flex items-center gap-x-2">
                     <button onclick="fillSampleData()" 
-                            class="flex items-center gap-x-2 px-5 py-2.5 bg-white border border-gray-300 hover:border-gray-400 rounded-2xl text-sm font-semibold text-gray-700 hover:text-gray-900">
-                        <span>📋</span>
-                        Sample Data
+                            class="flex items-center gap-x-2 px-4 py-2.5 bg-white border border-gray-300 hover:border-gray-400 rounded-2xl text-sm font-semibold text-gray-700 hover:text-gray-900">
+                        📋 Sample
                     </button>
-                    
                     <button onclick="clearForm()" 
-                            class="flex items-center gap-x-2 px-5 py-2.5 bg-white border border-red-200 hover:border-red-300 text-red-500 hover:text-red-600 rounded-2xl text-sm font-semibold">
-                        <span>🗑️</span>
-                        Clear
+                            class="flex items-center gap-x-2 px-4 py-2.5 bg-white border border-red-200 hover:border-red-300 text-red-500 hover:text-red-600 rounded-2xl text-sm font-semibold">
+                        🗑️ Clear
                     </button>
-                    
-                    <button onclick="downloadPDF()" 
+                    <button onclick="saveAsPDF()" 
                             class="flex items-center gap-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-2xl text-sm font-semibold shadow-lg shadow-blue-500/30">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h-10m4-4v8m-4-8V7m8 4V7" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 17V5a2 2 0 012-2h12a2 2 0 01-2 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2z" />
                         </svg>
-                        Download PDF
+                        Save as PDF
                     </button>
-                </div>
-            </div>
-            
-            <div class="flex items-center">
-                <div class="text-sm text-gray-500 font-medium px-4 py-1 bg-gray-100 rounded-3xl flex items-center">
-                    <div class="w-2 h-2 bg-emerald-400 rounded-full mr-2 animate-pulse"></div>
-                    Live Preview
                 </div>
             </div>
         </div>
@@ -163,652 +144,339 @@
 
     <div class="max-w-7xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
+          
             <!-- FORM PANEL -->
             <div class="lg:col-span-5 bg-white rounded-3xl shadow-xl border border-gray-100 p-8 no-print">
-                <div class="flex justify-between items-baseline mb-6">
+                <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-semibold text-gray-900">Build Your Resume</h2>
-                    <p class="text-blue-600 text-sm font-medium flex items-center">
-                        <span class="inline-block w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
-                        Real-time update
-                    </p>
                 </div>
-                
-                <!-- PERSONAL INFORMATION -->
+              
+                <!-- Personal Information -->
                 <div class="mb-8">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2">
-                            👤 Personal Information
-                        </h3>
-                        <label class="photo-upload cursor-pointer flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-blue-300 hover:border-blue-400 rounded-2xl bg-blue-50 overflow-hidden">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-x-2">👤 Personal Information</h3>
+                    <div class="flex justify-between items-start gap-6">
+                        <div class="flex-1 space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">Full Name</label>
+                                <input id="name" type="text" oninput="updateField('name', this.value)" 
+                                       class="form-input w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">Headline</label>
+                                <input id="headline" type="text" placeholder="e.g. Full Stack Developer" 
+                                       oninput="updateField('headline', this.value)" 
+                                       class="form-input w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none">
+                            </div>
+                        </div>
+                        <label class="photo-upload cursor-pointer w-28 h-28 border-2 border-dashed border-blue-300 hover:border-blue-400 rounded-2xl bg-blue-50 overflow-hidden flex-shrink-0">
                             <input type="file" id="photo-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
                             <div id="photo-preview" class="w-full h-full flex items-center justify-center">
                                 <div class="text-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-blue-400 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                                     </svg>
-                                    <p class="text-xs text-blue-500 font-medium">Add photo</p>
+                                    <p class="text-xs text-blue-500 font-medium">Photo</p>
                                 </div>
                             </div>
                         </label>
                     </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600 mb-1">Full Name</label>
-                            <input id="name" type="text" 
-                                   oninput="updateField('name', this.value)"
-                                   class="form-input w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none text-gray-900">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600 mb-1">Professional Headline</label>
-                            <input id="headline" type="text" placeholder="e.g. Software Engineer | Product Manager"
-                                   oninput="updateField('headline', this.value)"
-                                   class="form-input w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none text-gray-900">
-                        </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-600 mb-1">Email</label>
-                            <input id="email" type="email" 
-                                   oninput="updateField('email', this.value)"
-                                   class="form-input w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none text-gray-900">
+                            <input id="email" type="email" oninput="updateField('email', this.value)" 
+                                   class="form-input w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-600 mb-1">Phone</label>
-                            <input id="phone" type="tel" 
-                                   oninput="updateField('phone', this.value)"
-                                   class="form-input w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none text-gray-900">
+                            <input id="phone" type="tel" oninput="updateField('phone', this.value)" 
+                                   class="form-input w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-600 mb-1">Address</label>
-                            <input id="address" type="text" 
-                                   oninput="updateField('address', this.value)"
-                                   class="form-input w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none text-gray-900">
+                            <input id="address" type="text" oninput="updateField('address', this.value)" 
+                                   class="form-input w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none">
                         </div>
                     </div>
                 </div>
-                
-                <!-- PROFILE SUMMARY -->
+              
+                <!-- Summary -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-x-2">
-                        📝 Profile Summary
-                    </h3>
-                    <textarea id="summary" rows="3" placeholder="Write a compelling 3-4 line summary..."
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">📝 Profile Summary</h3>
+                    <textarea id="summary" rows="4" placeholder="Write a short professional summary..." 
                               oninput="updateField('summary', this.value)"
                               class="form-input w-full px-4 py-3 border border-gray-200 rounded-3xl focus:outline-none resize-none"></textarea>
                 </div>
-                
-                <!-- SKILLS -->
+              
+                <!-- Skills -->
                 <div class="mb-8">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2">🛠️ Skills</h3>
-                        <div class="flex items-center gap-x-2">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-lg font-semibold text-gray-800">🛠️ Skills</h3>
+                        <div class="flex gap-2">
                             <input id="skill-input" type="text" placeholder="Add skill" 
-                                   class="px-4 py-2 text-sm border border-gray-200 rounded-2xl w-48 focus:outline-none">
+                                   class="px-4 py-2 text-sm border border-gray-200 rounded-2xl focus:outline-none w-52">
                             <button onclick="addSkill()" 
-                                    class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-2xl text-sm font-semibold flex items-center gap-x-1">
-                                <span>+</span> Add
-                            </button>
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-2xl text-sm font-semibold">+ Add</button>
                         </div>
                     </div>
-                    <div id="skills-container" class="flex flex-wrap gap-2 min-h-[52px]"></div>
+                    <div id="skills-container" class="flex flex-wrap gap-2 min-h-[50px]"></div>
                 </div>
-                
-                <!-- EDUCATION -->
+              
+                <!-- Education -->
                 <div class="mb-8">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold text-gray-800">🎓 Education</h3>
-                        <button onclick="addEducation()" 
-                                class="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center gap-x-1">
-                            <span class="text-xl leading-none">+</span> Add Education
-                        </button>
+                        <button onclick="addEducation()" class="text-blue-600 hover:text-blue-700 text-sm font-semibold">+ Add</button>
                     </div>
                     <div id="education-container" class="space-y-6"></div>
                 </div>
-                
-                <!-- EXPERIENCE -->
+              
+                <!-- Experience -->
                 <div class="mb-8">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold text-gray-800">💼 Experience</h3>
-                        <button onclick="addExperience()" 
-                                class="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center gap-x-1">
-                            <span class="text-xl leading-none">+</span> Add Experience
-                        </button>
+                        <button onclick="addExperience()" class="text-blue-600 hover:text-blue-700 text-sm font-semibold">+ Add</button>
                     </div>
                     <div id="experience-container" class="space-y-6"></div>
                 </div>
-                
-                <!-- PROJECTS -->
+              
+                <!-- Projects -->
                 <div>
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold text-gray-800">🚀 Projects</h3>
-                        <button onclick="addProject()" 
-                                class="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center gap-x-1">
-                            <span class="text-xl leading-none">+</span> Add Project
-                        </button>
+                        <button onclick="addProject()" class="text-blue-600 hover:text-blue-700 text-sm font-semibold">+ Add</button>
                     </div>
                     <div id="projects-container" class="space-y-6"></div>
                 </div>
             </div>
-            
-            <!-- PREVIEW PANEL -->
+          
+            <!-- PURE RESUME A4 PREVIEW (no extra white card or page behind) -->
             <div class="lg:col-span-7">
-                <div class="preview-panel bg-white rounded-3xl p-6 shadow-2xl border border-gray-100">
-                    
-                    <!-- Preview Header -->
-                    <div class="flex items-center justify-between mb-6 no-print">
-                        <div class="flex items-center text-sm font-medium text-gray-500">
-                            <span class="px-3 py-1 bg-gray-100 rounded-3xl">Live Preview</span>
-                        </div>
-                        
-                        <div class="flex items-center text-xs uppercase font-semibold tracking-widest text-gray-400">
-                            <span id="current-template-name" class="px-3">CLASSIC TEMPLATE</span>
-                        </div>
+                <div id="preview-wrapper">
+                    <div id="resume-preview" class="resume-preview mx-auto">
+                        <!-- Only resume content here - no extra page -->
                     </div>
-                    
-                    <!-- Actual Resume Preview -->
-                    <div id="resume-preview" class="resume-preview bg-white mx-auto rounded-3xl overflow-hidden min-h-[580px] text-gray-800">
-                        <!-- Populated by JavaScript -->
-                    </div>
-                </div>
-                
-                <div class="mt-6 flex justify-center text-xs text-gray-400 font-medium gap-x-6 no-print">
-                    <div class="flex items-center gap-x-1">
-                        <span class="block w-3 h-px bg-gray-300"></span>
-                        Real-time updates • Mobile friendly
-                        <span class="block w-3 h-px bg-gray-300"></span>
-                    </div>
-                    <div>Ready to deploy on Vercel</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        /**
-         * TailwindCSS initialization
-         */
-        function initializeTailwind() {
-            return {
-                config(userConfig = {}) {
-                    return {
-                        content: [],
-                        theme: {
-                            extend: {
-                                fontFamily: {
-                                    heading: ['Playfair Display', 'sans-serif']
-                                }
-                            }
-                        },
-                        plugins: [],
-                        ...userConfig,
-                    }
-                },
-                theme: {
-                    extend: {},
-                },
-            }
-        }
-        
-        /**
-         * Main resume data object
-         */
         let resumeData = {
-            name: '',
-            headline: '',
-            email: '',
-            phone: '',
-            address: '',
-            photo: '',
-            summary: '',
-            skills: [],
-            education: [],
-            experience: [],
-            projects: [],
-            template: 0 // 0 = classic, 1 = modern
-        }
-        
-        /**
-         * Update single field and re-render preview
-         */
+            name: '', headline: '', email: '', phone: '', address: '', photo: '',
+            summary: '', skills: [], education: [], experience: [], projects: [],
+            template: 0
+        };
+
         function updateField(key, value) {
-            resumeData[key] = value
-            renderPreview()
+            resumeData[key] = value;
+            renderPreview();
         }
-        
-        /**
-         * Handle profile photo upload
-         */
+
         function handlePhotoUpload(e) {
-            const file = e.target.files[0]
-            if (!file) return
-            
-            const reader = new FileReader()
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
             reader.onload = function(ev) {
-                resumeData.photo = ev.target.result
-                // Show preview in form
-                const container = document.getElementById('photo-preview')
-                container.innerHTML = `
-                    <img src="${resumeData.photo}" alt="Profile photo" 
-                         class="w-full h-full object-cover rounded-2xl">
-                `
-                renderPreview()
-            }
-            reader.readAsDataURL(file)
+                resumeData.photo = ev.target.result;
+                document.getElementById('photo-preview').innerHTML = `<img src="${resumeData.photo}" class="w-full h-full object-cover">`;
+                renderPreview();
+            };
+            reader.readAsDataURL(file);
         }
-        
-        /**
-         * Add a new skill
-         */
+
         function addSkill() {
-            const input = document.getElementById('skill-input')
-            const skill = input.value.trim()
-            
+            const input = document.getElementById('skill-input');
+            const skill = input.value.trim();
             if (skill && !resumeData.skills.includes(skill)) {
-                resumeData.skills.push(skill)
-                input.value = ''
-                renderSkills()
-                renderPreview()
+                resumeData.skills.push(skill);
+                input.value = '';
+                renderSkills();
+                renderPreview();
             }
         }
-        
-        /**
-         * Remove a skill
-         */
+
         function removeSkill(index) {
-            resumeData.skills.splice(index, 1)
-            renderSkills()
-            renderPreview()
+            resumeData.skills.splice(index, 1);
+            renderSkills();
+            renderPreview();
         }
-        
-        /**
-         * Render skills tags in the form
-         */
+
         function renderSkills() {
-            const container = document.getElementById('skills-container')
-            container.innerHTML = ''
-            
+            const container = document.getElementById('skills-container');
+            container.innerHTML = '';
             resumeData.skills.forEach((skill, i) => {
-                const tag = document.createElement('div')
-                tag.className = 'flex items-center gap-x-2 bg-blue-50 text-blue-700 text-sm font-medium px-4 py-2 rounded-3xl hover:bg-blue-100 group'
-                tag.innerHTML = `
-                    ${skill}
-                    <button onclick="removeSkill(${i}); event.stopImmediatePropagation()" 
-                            class="ml-2 text-blue-400 hover:text-red-500 text-lg leading-none group-hover:text-red-500">×</button>
-                `
-                container.appendChild(tag)
-            })
-            
-            // Empty state
+                const tag = document.createElement('div');
+                tag.className = 'bg-blue-50 text-blue-700 px-4 py-1.5 rounded-3xl text-sm flex items-center gap-2';
+                tag.innerHTML = `${skill} <button onclick="removeSkill(${i});event.stopImmediatePropagation()" class="text-red-500 hover:text-red-700 text-lg leading-none">×</button>`;
+                container.appendChild(tag);
+            });
             if (resumeData.skills.length === 0) {
-                container.innerHTML = `<p class="text-gray-400 text-sm italic">No skills added yet. Type and press Add.</p>`
+                container.innerHTML = `<p class="text-gray-400 text-sm">No skills added yet</p>`;
             }
         }
-        
-        /**
-         * Add new education entry
-         */
-        function addEducation() {
-            const newEdu = {
-                id: Date.now(),
-                school: '',
-                degree: '',
-                start: '',
-                end: '',
-                description: ''
-            }
-            resumeData.education.push(newEdu)
-            renderEducation()
-            renderPreview()
-        }
-        
-        /**
-         * Update education field
-         */
-        function updateEducation(id, field, value) {
-            const edu = resumeData.education.find(e => e.id === id)
-            if (edu) {
-                edu[field] = value
-                renderPreview()
-            }
-        }
-        
-        /**
-         * Remove education
-         */
-        function removeEducation(id) {
-            resumeData.education = resumeData.education.filter(e => e.id !== id)
-            renderEducation()
-            renderPreview()
-        }
-        
-        /**
-         * Render all education entries in form
-         */
+
+        function addEducation() { resumeData.education.push({id: Date.now(), school:'', degree:'', start:'', end:'', description:''}); renderEducation(); renderPreview(); }
+        function updateEducation(id, field, value) { const item = resumeData.education.find(e => e.id === id); if (item) item[field] = value; renderPreview(); }
+        function removeEducation(id) { resumeData.education = resumeData.education.filter(e => e.id !== id); renderEducation(); renderPreview(); }
         function renderEducation() {
-            const container = document.getElementById('education-container')
-            container.innerHTML = ''
-            
+            const container = document.getElementById('education-container');
+            container.innerHTML = '';
             resumeData.education.forEach(edu => {
-                const div = document.createElement('div')
-                div.className = 'border border-gray-200 rounded-3xl p-5 bg-white'
+                const div = document.createElement('div');
+                div.className = 'border border-gray-200 rounded-3xl p-5';
                 div.innerHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="text-xs font-medium text-gray-500">School / University</label>
-                            <input type="text" value="${edu.school}" 
-                                   oninput="updateEducation(${edu.id}, 'school', this.value)"
-                                   class="form-input block w-full mt-1 px-4 py-3 rounded-2xl border border-gray-200">
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium text-gray-500">Degree</label>
-                            <input type="text" value="${edu.degree}" 
-                                   oninput="updateEducation(${edu.id}, 'degree', this.value)"
-                                   class="form-input block w-full mt-1 px-4 py-3 rounded-2xl border border-gray-200">
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium text-gray-500">Start Date</label>
-                            <input type="text" placeholder="Jun 2022" value="${edu.start}" 
-                                   oninput="updateEducation(${edu.id}, 'start', this.value)"
-                                   class="form-input block w-full mt-1 px-4 py-3 rounded-2xl border border-gray-200">
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium text-gray-500">End Date</label>
-                            <input type="text" placeholder="Present" value="${edu.end}" 
-                                   oninput="updateEducation(${edu.id}, 'end', this.value)"
-                                   class="form-input block w-full mt-1 px-4 py-3 rounded-2xl border border-gray-200">
-                        </div>
+                        <div><label class="text-xs text-gray-500">School</label><input type="text" value="${edu.school}" oninput="updateEducation(${edu.id}, 'school', this.value)" class="form-input w-full mt-1 px-4 py-3 rounded-2xl border"></div>
+                        <div><label class="text-xs text-gray-500">Degree</label><input type="text" value="${edu.degree}" oninput="updateEducation(${edu.id}, 'degree', this.value)" class="form-input w-full mt-1 px-4 py-3 rounded-2xl border"></div>
+                        <div><label class="text-xs text-gray-500">Start</label><input type="text" value="${edu.start}" oninput="updateEducation(${edu.id}, 'start', this.value)" class="form-input w-full mt-1 px-4 py-3 rounded-2xl border"></div>
+                        <div><label class="text-xs text-gray-500">End</label><input type="text" value="${edu.end}" oninput="updateEducation(${edu.id}, 'end', this.value)" class="form-input w-full mt-1 px-4 py-3 rounded-2xl border"></div>
                     </div>
-                    <div>
-                        <label class="text-xs font-medium text-gray-500">Description / Achievements</label>
-                        <textarea rows="2" oninput="updateEducation(${edu.id}, 'description', this.value)" 
-                                  class="form-input block w-full mt-1 px-4 py-3 rounded-2xl border border-gray-200">${edu.description}</textarea>
-                    </div>
-                    <button onclick="removeEducation(${edu.id})" 
-                            class="mt-4 flex items-center text-red-400 hover:text-red-600 text-xs font-medium">
-                        <span class="mr-1">🗑️</span> Remove
-                    </button>
-                `
-                container.appendChild(div)
-            })
-            
-            if (resumeData.education.length === 0) {
-                container.innerHTML = `<div class="border border-dashed border-gray-200 rounded-3xl p-8 text-center text-gray-400">No education added yet.<br>Click "Add Education" to get started.</div>`
-            }
+                    <textarea rows="2" oninput="updateEducation(${edu.id}, 'description', this.value)" class="form-input w-full px-4 py-3 rounded-2xl border">${edu.description}</textarea>
+                    <button onclick="removeEducation(${edu.id})" class="mt-3 text-red-500 text-sm">Remove</button>
+                `;
+                container.appendChild(div);
+            });
+            if (resumeData.education.length === 0) container.innerHTML = `<div class="text-gray-400 text-center py-8 border border-dashed rounded-3xl">No education added</div>`;
         }
-        
-        /**
-         * Add new experience
-         */
-        function addExperience() {
-            const newExp = {
-                id: Date.now(),
-                title: '',
-                company: '',
-                start: '',
-                end: '',
-                description: ''
-            }
-            resumeData.experience.push(newExp)
-            renderExperience()
-            renderPreview()
-        }
-        
-        function updateExperience(id, field, value) {
-            const exp = resumeData.experience.find(e => e.id === id)
-            if (exp) {
-                exp[field] = value
-                renderPreview()
-            }
-        }
-        
-        function removeExperience(id) {
-            resumeData.experience = resumeData.experience.filter(e => e.id !== id)
-            renderExperience()
-            renderPreview()
-        }
-        
+
+        function addExperience() { resumeData.experience.push({id: Date.now(), title:'', company:'', start:'', end:'', description:''}); renderExperience(); renderPreview(); }
+        function updateExperience(id, field, value) { const item = resumeData.experience.find(e => e.id === id); if (item) item[field] = value; renderPreview(); }
+        function removeExperience(id) { resumeData.experience = resumeData.experience.filter(e => e.id !== id); renderExperience(); renderPreview(); }
         function renderExperience() {
-            const container = document.getElementById('experience-container')
-            container.innerHTML = ''
-            
+            const container = document.getElementById('experience-container');
+            container.innerHTML = '';
             resumeData.experience.forEach(exp => {
-                const div = document.createElement('div')
-                div.className = 'border border-gray-200 rounded-3xl p-5 bg-white'
+                const div = document.createElement('div');
+                div.className = 'border border-gray-200 rounded-3xl p-5';
                 div.innerHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="text-xs font-medium text-gray-500">Job Title</label>
-                            <input type="text" value="${exp.title}" 
-                                   oninput="updateExperience(${exp.id}, 'title', this.value)"
-                                   class="form-input block w-full mt-1 px-4 py-3 rounded-2xl border border-gray-200">
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium text-gray-500">Company</label>
-                            <input type="text" value="${exp.company}" 
-                                   oninput="updateExperience(${exp.id}, 'company', this.value)"
-                                   class="form-input block w-full mt-1 px-4 py-3 rounded-2xl border border-gray-200">
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium text-gray-500">Start Date</label>
-                            <input type="text" placeholder="Jan 2023" value="${exp.start}" 
-                                   oninput="updateExperience(${exp.id}, 'start', this.value)"
-                                   class="form-input block w-full mt-1 px-4 py-3 rounded-2xl border border-gray-200">
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium text-gray-500">End Date</label>
-                            <input type="text" placeholder="Present" value="${exp.end}" 
-                                   oninput="updateExperience(${exp.id}, 'end', this.value)"
-                                   class="form-input block w-full mt-1 px-4 py-3 rounded-2xl border border-gray-200">
-                        </div>
+                        <div><label class="text-xs text-gray-500">Job Title</label><input type="text" value="${exp.title}" oninput="updateExperience(${exp.id}, 'title', this.value)" class="form-input w-full mt-1 px-4 py-3 rounded-2xl border"></div>
+                        <div><label class="text-xs text-gray-500">Company</label><input type="text" value="${exp.company}" oninput="updateExperience(${exp.id}, 'company', this.value)" class="form-input w-full mt-1 px-4 py-3 rounded-2xl border"></div>
+                        <div><label class="text-xs text-gray-500">Start</label><input type="text" value="${exp.start}" oninput="updateExperience(${exp.id}, 'start', this.value)" class="form-input w-full mt-1 px-4 py-3 rounded-2xl border"></div>
+                        <div><label class="text-xs text-gray-500">End</label><input type="text" value="${exp.end}" oninput="updateExperience(${exp.id}, 'end', this.value)" class="form-input w-full mt-1 px-4 py-3 rounded-2xl border"></div>
                     </div>
-                    <div>
-                        <label class="text-xs font-medium text-gray-500">Description / Responsibilities</label>
-                        <textarea rows="3" oninput="updateExperience(${exp.id}, 'description', this.value)" 
-                                  class="form-input block w-full mt-1 px-4 py-3 rounded-2xl border border-gray-200">${exp.description}</textarea>
-                    </div>
-                    <button onclick="removeExperience(${exp.id})" 
-                            class="mt-4 flex items-center text-red-400 hover:text-red-600 text-xs font-medium">
-                        <span class="mr-1">🗑️</span> Remove
-                    </button>
-                `
-                container.appendChild(div)
-            })
-            
-            if (resumeData.experience.length === 0) {
-                container.innerHTML = `<div class="border border-dashed border-gray-200 rounded-3xl p-8 text-center text-gray-400">No experience added yet.<br>Click "Add Experience" above.</div>`
-            }
+                    <textarea rows="3" oninput="updateExperience(${exp.id}, 'description', this.value)" class="form-input w-full px-4 py-3 rounded-2xl border">${exp.description}</textarea>
+                    <button onclick="removeExperience(${exp.id})" class="mt-3 text-red-500 text-sm">Remove</button>
+                `;
+                container.appendChild(div);
+            });
+            if (resumeData.experience.length === 0) container.innerHTML = `<div class="text-gray-400 text-center py-8 border border-dashed rounded-3xl">No experience added</div>`;
         }
-        
-        /**
-         * Add new project
-         */
-        function addProject() {
-            const newProj = {
-                id: Date.now(),
-                title: '',
-                description: '',
-                link: ''
-            }
-            resumeData.projects.push(newProj)
-            renderProjects()
-            renderPreview()
-        }
-        
-        function updateProject(id, field, value) {
-            const proj = resumeData.projects.find(p => p.id === id)
-            if (proj) {
-                proj[field] = value
-                renderPreview()
-            }
-        }
-        
-        function removeProject(id) {
-            resumeData.projects = resumeData.projects.filter(p => p.id !== id)
-            renderProjects()
-            renderPreview()
-        }
-        
+
+        function addProject() { resumeData.projects.push({id: Date.now(), title:'', description:'', link:''}); renderProjects(); renderPreview(); }
+        function updateProject(id, field, value) { const item = resumeData.projects.find(p => p.id === id); if (item) item[field] = value; renderPreview(); }
+        function removeProject(id) { resumeData.projects = resumeData.projects.filter(p => p.id !== id); renderProjects(); renderPreview(); }
         function renderProjects() {
-            const container = document.getElementById('projects-container')
-            container.innerHTML = ''
-            
+            const container = document.getElementById('projects-container');
+            container.innerHTML = '';
             resumeData.projects.forEach(proj => {
-                const div = document.createElement('div')
-                div.className = 'border border-gray-200 rounded-3xl p-5 bg-white'
+                const div = document.createElement('div');
+                div.className = 'border border-gray-200 rounded-3xl p-5';
                 div.innerHTML = `
-                    <div class="mb-4">
-                        <label class="text-xs font-medium text-gray-500">Project Title</label>
-                        <input type="text" value="${proj.title}" 
-                               oninput="updateProject(${proj.id}, 'title', this.value)"
-                               class="form-input block w-full mt-1 px-4 py-3 rounded-2xl border border-gray-200">
-                    </div>
-                    <div class="mb-4">
-                        <label class="text-xs font-medium text-gray-500">Description</label>
-                        <textarea rows="2" oninput="updateProject(${proj.id}, 'description', this.value)" 
-                                  class="form-input block w-full px-4 py-3 rounded-2xl border border-gray-200">${proj.description}</textarea>
-                    </div>
-                    <div>
-                        <label class="text-xs font-medium text-gray-500">Link (optional)</label>
-                        <input type="text" value="${proj.link}" placeholder="https://github.com/..." 
-                               oninput="updateProject(${proj.id}, 'link', this.value)"
-                               class="form-input block w-full mt-1 px-4 py-3 rounded-2xl border border-gray-200">
-                    </div>
-                    <button onclick="removeProject(${proj.id})" 
-                            class="mt-4 flex items-center text-red-400 hover:text-red-600 text-xs font-medium">
-                        <span class="mr-1">🗑️</span> Remove
-                    </button>
-                `
-                container.appendChild(div)
-            })
-            
-            if (resumeData.projects.length === 0) {
-                container.innerHTML = `<div class="border border-dashed border-gray-200 rounded-3xl p-8 text-center text-gray-400">No projects added yet.<br>Click "Add Project" to showcase your work.</div>`
-            }
+                    <input type="text" value="${proj.title}" oninput="updateProject(${proj.id}, 'title', this.value)" placeholder="Project Title" class="form-input w-full mb-3 px-4 py-3 rounded-2xl border">
+                    <textarea rows="2" oninput="updateProject(${proj.id}, 'description', this.value)" class="form-input w-full mb-3 px-4 py-3 rounded-2xl border">${proj.description}</textarea>
+                    <input type="text" value="${proj.link}" oninput="updateProject(${proj.id}, 'link', this.value)" placeholder="Link (optional)" class="form-input w-full px-4 py-3 rounded-2xl border">
+                    <button onclick="removeProject(${proj.id})" class="mt-3 text-red-500 text-sm">Remove</button>
+                `;
+                container.appendChild(div);
+            });
+            if (resumeData.projects.length === 0) container.innerHTML = `<div class="text-gray-400 text-center py-8 border border-dashed rounded-3xl">No projects added</div>`;
         }
-        
-        /**
-         * Render the complete resume preview
-         */
+
         function renderPreview() {
-            const container = document.getElementById('resume-preview')
-            
-            const isClassic = resumeData.template === 0
-            const accentColor = isClassic ? 'blue' : 'emerald'
-            
+            const container = document.getElementById('resume-preview');
+            const isClassic = resumeData.template === 0;
+
             let html = `
-            <div class="${isClassic ? 'classic' : 'modern'} p-10">
-                <!-- HEADER -->
-                <div class="resume-header flex justify-between items-start mb-8 pb-6 ${isClassic ? '' : 'rounded-3xl px-8 py-6'}">
-                    <div class="flex-1">
-                        <h1 class="text-4xl font-semibold tracking-tighter ${isClassic ? 'text-gray-900' : 'text-white'}">${resumeData.name || 'Your Name'}</h1>
-                        ${resumeData.headline ? `<p class="text-lg ${isClassic ? 'text-blue-600' : 'text-white/90'} mt-1">${resumeData.headline}</p>` : ''}
-                        
-                        <div class="flex flex-wrap gap-x-6 gap-y-1 mt-4 text-sm ${isClassic ? 'text-gray-600' : 'text-white/80'}">
-                            ${resumeData.email ? `<div class="flex items-center gap-x-1"><span>✉️</span> ${resumeData.email}</div>` : ''}
-                            ${resumeData.phone ? `<div class="flex items-center gap-x-1"><span>📞</span> ${resumeData.phone}</div>` : ''}
-                            ${resumeData.address ? `<div class="flex items-center gap-x-1"><span>📍</span> ${resumeData.address}</div>` : ''}
-                        </div>
-                    </div>
-                    
-                    <!-- Photo -->
-                    ${resumeData.photo ? `
-                    <div class="w-24 h-24 flex-shrink-0 rounded-3xl overflow-hidden border-4 ${isClassic ? 'border-blue-200' : 'border-white'} shadow-md">
-                        <img src="${resumeData.photo}" alt="Profile" class="w-full h-full object-cover">
-                    </div>` : `
-                    <div class="w-24 h-24 flex-shrink-0 rounded-3xl border-4 ${isClassic ? 'border-blue-200 bg-blue-50' : 'border-white/30 bg-white/10'} flex items-center justify-center">
-                        <span class="text-4xl ${isClassic ? 'text-blue-300' : 'text-white/40'}">👤</span>
-                    </div>`}
-                </div>
-                
-                <!-- SUMMARY -->
-                ${resumeData.summary ? `
-                <div class="mb-8">
-                    <h2 class="uppercase text-xs font-semibold tracking-widest ${isClassic ? 'text-blue-600' : 'text-emerald-600'} mb-2">Profile Summary</h2>
-                    <p class="text-gray-700 leading-relaxed">${resumeData.summary}</p>
-                </div>` : ''}
-                
-                <!-- EXPERIENCE -->
-                ${resumeData.experience.length ? `
-                <div class="mb-8 resume-section">
-                    <h2 class="uppercase text-xs font-semibold tracking-widest ${isClassic ? 'text-blue-600' : 'text-emerald-600'} mb-4">Experience</h2>
-                    ${resumeData.experience.map(exp => `
-                    <div class="mb-6">
-                        <div class="flex justify-between items-baseline">
-                            <div>
-                                <div class="font-semibold">${exp.title}</div>
-                                <div class="text-gray-600">${exp.company} • ${exp.start} — ${exp.end}</div>
+            <div class="${isClassic ? 'classic' : 'modern'}">
+                <div class="p-5 text-sm leading-relaxed">
+                    <!-- Header -->
+                    <div class="resume-header flex justify-between items-start mb-5 pb-4 border-b ${isClassic ? 'border-gray-300' : ''}">
+                        <div>
+                            <h1 class="text-4xl font-bold tracking-tight ${isClassic ? 'text-gray-900' : 'text-white'}">${resumeData.name || 'Your Name'}</h1>
+                            <p class="text-lg mt-1 ${isClassic ? 'text-blue-600' : 'text-white/90'}">${resumeData.headline || ''}</p>
+                            <div class="flex flex-wrap gap-x-5 gap-y-1 mt-4 text-sm ${isClassic ? 'text-gray-600' : 'text-white/80'}">
+                                ${resumeData.email ? `<div>✉️ ${resumeData.email}</div>` : ''}
+                                ${resumeData.phone ? `<div>📞 ${resumeData.phone}</div>` : ''}
+                                ${resumeData.address ? `<div>📍 ${resumeData.address}</div>` : ''}
                             </div>
                         </div>
-                        <p class="text-gray-700 text-[15px] mt-2">${exp.description}</p>
-                    </div>`).join('')}
-                </div>` : ''}
-                
-                <!-- EDUCATION -->
-                ${resumeData.education.length ? `
-                <div class="mb-8 resume-section">
-                    <h2 class="uppercase text-xs font-semibold tracking-widest ${isClassic ? 'text-blue-600' : 'text-emerald-600'} mb-4">Education</h2>
-                    ${resumeData.education.map(edu => `
-                    <div class="mb-6">
-                        <div class="font-semibold">${edu.degree}</div>
-                        <div class="text-gray-600">${edu.school} • ${edu.start} — ${edu.end}</div>
-                        ${edu.description ? `<p class="text-gray-700 mt-2">${edu.description}</p>` : ''}
-                    </div>`).join('')}
-                </div>` : ''}
-                
-                <!-- PROJECTS -->
-                ${resumeData.projects.length ? `
-                <div class="mb-8 resume-section">
-                    <h2 class="uppercase text-xs font-semibold tracking-widest ${isClassic ? 'text-blue-600' : 'text-emerald-600'} mb-4">Featured Projects</h2>
-                    ${resumeData.projects.map(proj => `
-                    <div class="mb-5">
-                        <div class="flex items-baseline justify-between">
-                            <span class="font-semibold">${proj.title}</span>
-                            ${proj.link ? `<a href="${proj.link}" target="_blank" class="text-xs text-blue-500 underline">Visit →</a>` : ''}
-                        </div>
-                        <p class="text-gray-700">${proj.description}</p>
-                    </div>`).join('')}
-                </div>` : ''}
-                
-                <!-- SKILLS -->
-                ${resumeData.skills.length ? `
-                <div class="resume-section">
-                    <h2 class="uppercase text-xs font-semibold tracking-widest ${isClassic ? 'text-blue-600' : 'text-emerald-600'} mb-4">Skills</h2>
-                    <div class="${isClassic ? 'flex flex-wrap gap-2' : 'grid grid-cols-3 gap-3'}">
-                        ${resumeData.skills.map(skill => `
-                        <span class="px-4 py-2 text-sm rounded-3xl ${isClassic ? 'bg-gray-100 text-gray-800' : 'bg-white/10 text-white backdrop-blur-sm'}">${skill}</span>`).join('')}
+                        ${resumeData.photo ? `
+                        <div class="w-24 h-24 rounded-2xl overflow-hidden border-4 ${isClassic ? 'border-blue-200' : 'border-white shadow'} flex-shrink-0">
+                            <img src="${resumeData.photo}" class="w-full h-full object-cover">
+                        </div>` : ''}
                     </div>
-                </div>` : ''}
-            </div>`
-            
-            container.innerHTML = html
-            document.getElementById('current-template-name').textContent = isClassic ? 'CLASSIC TEMPLATE' : 'MODERN TEMPLATE'
+
+                    <!-- Summary -->
+                    ${resumeData.summary ? `
+                    <div class="mb-5">
+                        <h2 class="uppercase text-xs font-semibold tracking-widest ${isClassic ? 'text-blue-600' : 'text-emerald-600'} mb-2">PROFILE SUMMARY</h2>
+                        <p class="text-gray-700">${resumeData.summary}</p>
+                    </div>` : ''}
+
+                    <!-- Experience -->
+                    ${resumeData.experience.length ? `
+                    <div class="mb-5">
+                        <h2 class="uppercase text-xs font-semibold tracking-widest ${isClassic ? 'text-blue-600' : 'text-emerald-600'} mb-3">EXPERIENCE</h2>
+                        ${resumeData.experience.map(exp => `
+                        <div class="mb-4">
+                            <div class="font-semibold">${exp.title}</div>
+                            <div class="text-gray-600">${exp.company} • ${exp.start} — ${exp.end}</div>
+                            <p class="mt-2 text-gray-700">${exp.description}</p>
+                        </div>`).join('')}
+                    </div>` : ''}
+
+                    <!-- Education -->
+                    ${resumeData.education.length ? `
+                    <div class="mb-5">
+                        <h2 class="uppercase text-xs font-semibold tracking-widest ${isClassic ? 'text-blue-600' : 'text-emerald-600'} mb-3">EDUCATION</h2>
+                        ${resumeData.education.map(edu => `
+                        <div class="mb-4">
+                            <div class="font-semibold">${edu.degree}</div>
+                            <div class="text-gray-600">${edu.school} • ${edu.start} — ${edu.end}</div>
+                            ${edu.description ? `<p class="mt-2 text-gray-700">${edu.description}</p>` : ''}
+                        </div>`).join('')}
+                    </div>` : ''}
+
+                    <!-- Projects -->
+                    ${resumeData.projects.length ? `
+                    <div class="mb-5">
+                        <h2 class="uppercase text-xs font-semibold tracking-widest ${isClassic ? 'text-blue-600' : 'text-emerald-600'} mb-3">FEATURED PROJECTS</h2>
+                        ${resumeData.projects.map(proj => `
+                        <div class="mb-4">
+                            <div class="font-semibold">${proj.title}</div>
+                            <p class="text-gray-700">${proj.description}</p>
+                            ${proj.link ? `<a href="${proj.link}" target="_blank" class="text-blue-500 text-sm">Visit →</a>` : ''}
+                        </div>`).join('')}
+                    </div>` : ''}
+
+                    <!-- Skills -->
+                    ${resumeData.skills.length ? `
+                    <div>
+                        <h2 class="uppercase text-xs font-semibold tracking-widest ${isClassic ? 'text-blue-600' : 'text-emerald-600'} mb-3">SKILLS</h2>
+                        <div class="flex flex-wrap gap-2">
+                            ${resumeData.skills.map(skill => `
+                            <span class="px-4 py-2 bg-gray-100 text-gray-800 rounded-3xl text-sm">${skill}</span>`).join('')}
+                        </div>
+                    </div>` : ''}
+                </div>
+            </div>`;
+
+            container.innerHTML = html;
         }
-        
-        /**
-         * Switch between templates
-         */
+
         function switchTemplate(index) {
-            resumeData.template = index
-            
-            // Update active button UI
+            resumeData.template = index;
             document.querySelectorAll('.template-btn').forEach((btn, i) => {
-                btn.dataset.active = (i === index).toString()
-            })
-            
-            renderPreview()
+                btn.dataset.active = (i === index).toString();
+            });
+            renderPreview();
         }
-        
-        /**
-         * Download as PDF using window.print with print-ready styles
-         */
-        function downloadPDF() {
-            // Trigger print dialog (styled via @media print)
-            window.print()
+
+        function saveAsPDF() {
+            window.print();
         }
-        
-        /**
-         * Fill with beautiful sample data
-         */
+
         function fillSampleData() {
             resumeData = {
                 name: 'Ritik Sharma',
@@ -817,141 +485,65 @@
                 phone: '+91 98765 43210',
                 address: 'Bahraich, Uttar Pradesh, India',
                 photo: 'https://picsum.photos/id/1011/300/300',
-                summary: 'Passionate full-stack developer with 3+ years of experience building scalable web applications. Expert in React, Node.js, and modern UI/UX design. Delivered 12+ projects that increased user engagement by 45%.',
-                skills: ['React', 'Next.js', 'Node.js', 'TypeScript', 'Tailwind CSS', 'MongoDB', 'Python', 'AWS', 'Figma', 'Git'],
-                education: [
-                    {
-                        id: 1,
-                        school: 'Indian Institute of Technology, Kanpur',
-                        degree: 'B.Tech in Computer Science & Engineering',
-                        start: '2021',
-                        end: '2025',
-                        description: 'CGPA: 9.1 • Dean’s List 2023 • Led campus coding club with 400+ members'
-                    }
-                ],
+                summary: 'Passionate full-stack developer with 3+ years of experience building scalable web applications. Expert in React, Node.js, and modern UI/UX design.',
+                skills: ['React', 'Next.js', 'Node.js', 'Tailwind CSS', 'MongoDB', 'Python'],
+                education: [{id:1, school:'Indian Institute of Technology, Kanpur', degree:'B.Tech in Computer Science & Engineering', start:'2021', end:'2025', description:'CGPA: 9.1'}],
                 experience: [
-                    {
-                        id: 1,
-                        title: 'Software Engineer Intern',
-                        company: 'Zoho Corporation',
-                        start: 'May 2024',
-                        end: 'Aug 2024',
-                        description: 'Developed a real-time analytics dashboard used by 10k+ customers. Reduced load time by 60% using Next.js and Redis caching.'
-                    },
-                    {
-                        id: 2,
-                        title: 'Frontend Developer',
-                        company: 'Freelance',
-                        start: 'Jan 2023',
-                        end: 'Present',
-                        description: 'Built 7 client websites with modern animations and responsive design. Average client rating: 4.9/5'
-                    }
+                    {id:1, title:'Software Engineer Intern', company:'Zoho Corporation', start:'May 2024', end:'Aug 2024', description:'Developed real-time analytics dashboard.'},
+                    {id:2, title:'Frontend Developer', company:'Freelance', start:'Jan 2023', end:'Present', description:'Built 7 client websites.'}
                 ],
-                projects: [
-                    {
-                        id: 1,
-                        title: 'AI Resume Analyzer',
-                        description: 'SaaS tool that uses GPT-4 to score resumes and suggest improvements. 2.3k users in first month.',
-                        link: 'https://github.com/ritik/ai-resume'
-                    },
-                    {
-                        id: 2,
-                        title: 'CampusConnect',
-                        description: 'College social platform built with Next.js + Supabase. 1.2k active students.',
-                        link: ''
-                    }
-                ],
+                projects: [{id:1, title:'AI Resume Analyzer', description:'SaaS tool using GPT-4.', link:''}],
                 template: resumeData.template
-            }
-            
-            // Update form inputs
-            document.getElementById('name').value = resumeData.name
-            document.getElementById('headline').value = resumeData.headline
-            document.getElementById('email').value = resumeData.email
-            document.getElementById('phone').value = resumeData.phone
-            document.getElementById('address').value = resumeData.address
-            document.getElementById('summary').value = resumeData.summary
-            
-            // Photo preview
-            const photoContainer = document.getElementById('photo-preview')
-            photoContainer.innerHTML = `<img src="${resumeData.photo}" class="w-full h-full object-cover rounded-2xl">`
-            
-            // Render dynamic sections
-            renderSkills()
-            renderEducation()
-            renderExperience()
-            renderProjects()
-            renderPreview()
-            
-            // Nice little toast
-            const toast = document.createElement('div')
-            toast.className = 'fixed bottom-6 right-6 bg-emerald-600 text-white px-6 py-3 rounded-2xl shadow-xl flex items-center gap-x-2 text-sm'
-            toast.innerHTML = `✅ Sample data loaded!`
-            document.body.appendChild(toast)
-            setTimeout(() => toast.remove(), 2800)
+            };
+
+            document.getElementById('name').value = resumeData.name;
+            document.getElementById('headline').value = resumeData.headline;
+            document.getElementById('email').value = resumeData.email;
+            document.getElementById('phone').value = resumeData.phone;
+            document.getElementById('address').value = resumeData.address;
+            document.getElementById('summary').value = resumeData.summary;
+
+            document.getElementById('photo-preview').innerHTML = `<img src="${resumeData.photo}" class="w-full h-full object-cover">`;
+
+            renderSkills();
+            renderEducation();
+            renderExperience();
+            renderProjects();
+            renderPreview();
         }
-        
-        /**
-         * Clear entire form
-         */
+
         function clearForm() {
-            if (!confirm('Clear everything and start fresh?')) return
-            
-            resumeData = {
-                name: '',
-                headline: '',
-                email: '',
-                phone: '',
-                address: '',
-                photo: '',
-                summary: '',
-                skills: [],
-                education: [],
-                experience: [],
-                projects: [],
-                template: resumeData.template
-            }
-            
-            // Reset inputs
-            document.getElementById('name').value = ''
-            document.getElementById('headline').value = ''
-            document.getElementById('email').value = ''
-            document.getElementById('phone').value = ''
-            document.getElementById('address').value = ''
-            document.getElementById('summary').value = ''
-            document.getElementById('skill-input').value = ''
-            
-            // Reset photo
+            if (!confirm('Clear everything?')) return;
+            resumeData = {name:'', headline:'', email:'', phone:'', address:'', photo:'', summary:'', skills:[], education:[], experience:[], projects:[], template: resumeData.template};
+            document.getElementById('name').value = '';
+            document.getElementById('headline').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('address').value = '';
+            document.getElementById('summary').value = '';
+            document.getElementById('skill-input').value = '';
             document.getElementById('photo-preview').innerHTML = `
                 <div class="text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-blue-400 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    <p class="text-xs text-blue-500 font-medium">Add photo</p>
-                </div>`
-            
-            renderSkills()
-            renderEducation()
-            renderExperience()
-            renderProjects()
-            renderPreview()
+                    <p class="text-xs text-blue-500 font-medium">Photo</p>
+                </div>`;
+            renderSkills();
+            renderEducation();
+            renderExperience();
+            renderProjects();
+            renderPreview();
         }
-        
-        /**
-         * Boot the application
-         */
+
         window.onload = function() {
-            initializeTailwind()
-            
-            // Initial empty render
-            renderSkills()
-            renderEducation()
-            renderExperience()
-            renderProjects()
-            renderPreview()
-            
-            console.log('%c🚀 ResumePro is ready! Single-file professional resume builder loaded.', 'color:#2563eb;font-weight:600')
-        }
+            renderSkills();
+            renderEducation();
+            renderExperience();
+            renderProjects();
+            renderPreview();
+            console.log('%c✅ Only Pure Resume A4 - No extra page behind', 'color:#2563eb;font-weight:600');
+        };
     </script>
 </body>
 </html>
